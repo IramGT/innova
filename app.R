@@ -1,7 +1,6 @@
 ## LIBRARIES
 
 library(sf)
-library(raster)
 library(ggplot2)
 library(tmap)
 library(tmaptools)
@@ -10,7 +9,6 @@ library(dplyr)
 library(viridis)
 library(readr)
 library(utils)
-library(tmap)
 library(shiny)
 library(bslib)
 library(shinyjs)
@@ -182,9 +180,9 @@ server <- function(input, output) {
         mutate(ResultadosOb = round(100 * RESULTADOS / objetivo, 0)) %>% 
         filter(MunicipioN == input$select_sec_1) %>% 
         tm_shape() +
-        tm_polygons(col = "ResultadosOb", id = "seccion", midpoint =50, n = 5, style = "quantile", alpha = .5, palette = c("#D6E2FF", "#3D31F6", "#FFFB92", "#FEA601", "#AA282D"), title = "Objetivo %", popup.vars = c("Objetivo" = "objetivo", "Avance %" = "ResultadosOb", "Promovidos" = "RESULTADOS")) +
+        tm_polygons(col = "ResultadosOb", id = "seccion", midpoint =50, style = "fixed", breaks = c(0,5,10,15,20,60), alpha = .5, palette = c("#D6E2FF", "#3D31F6", "#FFFB92", "#FEA601", "#AA282D"), title = "Objetivo %", popup.vars = c("Objetivo" = "objetivo", "Avance %" = "ResultadosOb", "Promovidos" = "RESULTADOS")) +
         tm_basemap("OpenStreetMap")
-      tmap_leaflet(tm)
+      tmap_leaflet(tm, in.shiny = TRUE)
     })
     
     output$mapR <- renderLeaflet({
@@ -193,7 +191,7 @@ server <- function(input, output) {
         tm_shape() +
         tm_polygons(col = "Participacion", id = "seccion", midpoint =16, n = 5, alpha = .6, palette = c("#D6E2FF", "#3D31F6", "#FFFB92", "#FEA601", "#AA282D"), title = "Logrado %", popup.vars = c("Objetivo" = "ListaNominal", "Avance %" = "Participacion", "Siga" = "Siga")) +
         tm_basemap("OpenStreetMap")
-      tmap_leaflet(tm)
+      tmap_leaflet(tm, in.shiny = TRUE)
     })
     
     output$plot1 <- renderPlot({
@@ -212,7 +210,8 @@ server <- function(input, output) {
         theme_minimal() +
         scale_y_continuous() +
         theme(plot.title = element_text("PLot 2 title"), axis.title.x = element_text("Promovente"), axis.title.y = element_blank()) +
-        ylab("Mayor avance")  
+        ylab("Mayor avance")  %>% 
+        print()
     })
     
     output$plot2 <- renderPlot({
@@ -232,7 +231,8 @@ server <- function(input, output) {
         theme_minimal() +
         scale_y_continuous() +
         theme(plot.title = element_text("PLot 2 title"), axis.title.x = element_text("Promovente"), axis.title.y = element_blank()) +
-        ylab("Menor avance")  
+        ylab("Menor avance")  %>% 
+        print()
     })
     
     output$plot3 <- renderPlot({
@@ -249,7 +249,8 @@ server <- function(input, output) {
         theme_minimal() +
         scale_y_continuous() +
         theme(plot.title = element_text("PLot 2 title"), axis.title.x = element_text("Promovente"), axis.title.y = element_blank()) +
-        ylab("Resultados")
+        ylab("Resultados") %>% 
+        print()
     })
     
     output$Total <- renderTable({
